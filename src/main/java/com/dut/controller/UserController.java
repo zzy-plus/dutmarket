@@ -36,7 +36,10 @@ public class UserController {
     @GetMapping
     public R<User> getOneUserById(Long id){
         User user = userService.getById(id);
-        if(user != null) return R.success(user);
+        if(user != null){
+            user.setPassword("");   // 敏感字段处理
+            return R.success(user);
+        }
         else return R.error(Code.USER_NOT_FOUND, "用户不存在");
     }
 
