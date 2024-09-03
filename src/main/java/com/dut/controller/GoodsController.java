@@ -17,9 +17,9 @@ public class GoodsController {
     GoodsService goodsService;
 
     /**
-     * 新增商品
+     * 添加商品
      * @param goods
-     * @return
+     * @return 添加状态
      */
     @PostMapping
     public R<String> addGoods(Goods goods){
