@@ -16,6 +16,11 @@ public class GoodsController {
     @Autowired
     GoodsService goodsService;
 
+    /**
+     * 添加商品
+     * @param goods
+     * @return 添加状态
+     */
     @PostMapping
     public R<String> addGoods(Goods goods){
         goodsService.save(goods);
