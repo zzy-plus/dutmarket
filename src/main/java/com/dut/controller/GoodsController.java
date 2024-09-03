@@ -16,12 +16,24 @@ public class GoodsController {
     @Autowired
     GoodsService goodsService;
 
+    /**
+     * 新增商品
+     * @param goods
+     * @return
+     */
     @PostMapping
     public R<String> addGoods(Goods goods){
         goodsService.save(goods);
         return R.success("success");
     }
 
+    /**
+     * 分页查询商品
+     * @param goods
+     * @param curPage
+     * @param pageSize
+     * @return
+     */
     @GetMapping
     public R<Page<Goods>> getGoodsByPage(Goods goods,
                                          @RequestParam(defaultValue = "1") Integer curPage,
