@@ -1,7 +1,6 @@
 package com.dut.commom;
 
 import com.alibaba.fastjson.JSON;
-import com.dut.entity.User;
 import com.dut.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;

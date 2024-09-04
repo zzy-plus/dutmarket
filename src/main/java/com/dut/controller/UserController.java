@@ -1,18 +1,13 @@
 package com.dut.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.dut.commom.Code;
 import com.dut.commom.R;
 import com.dut.entity.User;
 import com.dut.service.UserService;
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
-import redis.clients.jedis.Jedis;
 
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/user")
