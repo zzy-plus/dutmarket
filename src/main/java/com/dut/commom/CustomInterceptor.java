@@ -26,6 +26,7 @@ public class CustomInterceptor implements HandlerInterceptor {
         String servletPath = request.getServletPath();
         if(servletPath.startsWith("/error")) return true;
         if(servletPath.startsWith("/lg")) return true;
+        if(servletPath.equals("/user/register")) return true;
 
         // 检查会话
         HttpSession session = request.getSession();

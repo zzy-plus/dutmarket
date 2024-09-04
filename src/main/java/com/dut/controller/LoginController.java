@@ -7,26 +7,38 @@ import com.dut.commom.Code;
 import com.dut.commom.R;
 import com.dut.entity.User;
 import com.dut.service.UserService;
+import com.dut.utils.EmailUtil;
 import com.dut.utils.JwtUtil;
+import com.dut.utils.ValidateCodeUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
 @RequestMapping("/lg")
 public class LoginController {
     @Autowired
-    UserService userService;
+    private UserService userService;
     @Value("${jwt-secret-key}")
-    String jwtSecretKey;
+    private String jwtSecretKey;
+    @Autowired
+    private RedisTemplate redisTemplate;
+    @Value("${email.user}")
+    private String emailUsername;
+    @Value("${email.auth-code}")
+    private String authCode;
 
     @PostMapping("/login")
     public R<String> login(@RequestBody User user, HttpSession session, HttpServletResponse response){
@@ -53,6 +65,28 @@ public class LoginController {
     @GetMapping("/logout")
     public R<String> logout(){
         return null;
+    }
+
+    @GetMapping("/code")
+    public R<String> getCode(String email, HttpSession session){
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime time = (LocalDateTime)session.getAttribute("time");
+        if(time != null){
+            long between = ChronoUnit.SECONDS.between(time, now);
+            if(between < 60) return R.error(Code.TOO_FREQUENTLY, "请求太频繁，请于1分钟后重试");
+        }
+        session.setAttribute("time", now);
+
+        String code = ValidateCodeUtil.generateCode();
+        redisTemplate.opsForValue().set(email, code, 5, TimeUnit.MINUTES);
+        //发送邮件
+        Map<String, String> mp= new HashMap<>();
+        mp.put("user", emailUsername);
+        mp.put("authCode", authCode);
+        mp.put("to", email);
+        mp.put("code", code);
+        EmailUtil.sendEmail(mp);
+        return R.success("success");
     }
 
 }
