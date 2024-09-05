@@ -53,5 +53,11 @@ public class GoodsController {
         return R.success(page);
     }
 
+    @DeleteMapping
+    public R<String> deleteGoodById(Integer id){
+        goodsService.removeById(id);
+        return R.success("success");
+    }
+
 
 }
