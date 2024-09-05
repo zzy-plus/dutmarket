@@ -2,7 +2,6 @@ package com.dut.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.dut.commom.Code;
 import com.dut.commom.R;
 import com.dut.entity.User;
