@@ -7,6 +7,7 @@ import com.dut.entity.Goods;
 import com.dut.entity.User;
 import com.dut.service.GoodsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -40,13 +41,14 @@ public class GoodsController {
                                          @RequestParam(defaultValue = "20") Integer pageSize){
         Page<Goods> pageInfo = new Page<>(curPage, pageSize);
         LambdaQueryWrapper<Goods> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(goods.getCategory()!=null, Goods::getCategory, goods.getCategory())
+        if(StringUtils.hasLength(goods.getName()) || goods.getCategory()!=null && goods.getCategory() != -1){
+            queryWrapper.eq(goods.getCategory()!=null && goods.getCategory()!=-1, Goods::getCategory, goods.getCategory())
                     .and(qw-> qw
-                            .like(goods.getName()!=null, Goods::getName, goods.getName())
+                            .like(StringUtils.hasLength(goods.getName()), Goods::getName, goods.getName())
                             .or()
-                            .like(goods.getName()!=null, Goods::getDescription, goods.getName())
+                            .like(StringUtils.hasLength(goods.getName()), Goods::getDescription, goods.getName())
                     );
-
+        }
 
         Page<Goods> page = goodsService.page(pageInfo, queryWrapper);
 
