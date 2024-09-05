@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/goods")
 public class GoodsController {
@@ -23,7 +25,10 @@ public class GoodsController {
      * @return 添加状态
      */
     @PostMapping
-    public R<String> addGoods(Goods goods){
+    public R<String> addGoods(@RequestBody Goods goods, HttpSession session){
+        Long publisherId = (Long) session.getAttribute("userId");
+        goods.setPublisherId(publisherId);
+        System.out.println(goods);
         goodsService.save(goods);
         return R.success("success");
     }

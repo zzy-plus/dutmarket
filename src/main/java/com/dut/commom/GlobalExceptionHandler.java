@@ -21,6 +21,7 @@ public class GlobalExceptionHandler {
         if(e.getMessage().contains("Duplicate entry")){
             return R.error( Code.USER_ALREADY_EXISTS, "用户名已存在");
         }else if(e.getMessage().contains("doesn't have a default value")){
+            log.error(e.getMessage());
             return R.error( Code.SQL_FIELD_ERROR, "参数有误");
         }
         log.error(e.getMessage());
