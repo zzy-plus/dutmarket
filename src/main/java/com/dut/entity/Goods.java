@@ -16,7 +16,7 @@ public class Goods {
     private Long publisherId;
     private String name;
     private String description;
-    private Integer price;
+    private Double price;
     private Integer category;
     private String tags;
     private String mainImg;
