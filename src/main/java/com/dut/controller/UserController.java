@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
+
 
 @RestController
 @RequestMapping("/user")
@@ -53,6 +55,20 @@ public class UserController {
             return R.success(user);
         }
         else return R.error(Code.USER_NOT_FOUND, "用户不存在");
+    }
+
+    /**
+     * 通过session中保存的id获取当前用户信息
+     * @param session
+     * @return
+     */
+    @GetMapping("/myInfo")
+    public R<User> myInfo(HttpSession session){
+        Long id = (Long)session.getAttribute("userId");
+        if(id == null) return R.error("未登录");
+        User user = userService.getById(id);
+        if(user == null) return R.error(Code.NO_SUCH_USER, "用户未知");
+        return R.success(user);
     }
 
 }

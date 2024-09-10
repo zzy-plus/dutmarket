@@ -46,13 +46,13 @@ public class GoodsController {
                                          @RequestParam(defaultValue = "20") Integer pageSize){
         Page<Goods> pageInfo = new Page<>(curPage, pageSize);
         LambdaQueryWrapper<Goods> queryWrapper = new LambdaQueryWrapper<>();
-        if(StringUtils.hasLength(goods.getName()) || goods.getCategory()!=null && goods.getCategory() != -1){
-            queryWrapper.eq(goods.getCategory()!=null && goods.getCategory()!=-1, Goods::getCategory, goods.getCategory())
-                    .and(qw-> qw
-                            .like(StringUtils.hasLength(goods.getName()), Goods::getName, goods.getName())
-                            .or()
-                            .like(StringUtils.hasLength(goods.getName()), Goods::getDescription, goods.getName())
-                    );
+        queryWrapper.eq(goods.getCategory()!=null && goods.getCategory()!=-1, Goods::getCategory, goods.getCategory());
+        if(StringUtils.hasLength(goods.getName())){
+            queryWrapper.and(qw -> qw
+                    .like(Goods::getName, goods.getName())
+                    .or()
+                    .like( Goods::getDescription, goods.getName())
+            );
         }
 
         Page<Goods> page = goodsService.page(pageInfo, queryWrapper);
@@ -60,8 +60,17 @@ public class GoodsController {
         return R.success(page);
     }
 
+    @GetMapping("/detail")
+    public R<Goods> getGoodsDetail(Long id){
+        Goods goods = goodsService.getById(id);
+        if(goods == null){
+            return R.error(Long.toString(id) + "商品不存在!");
+        }
+        return R.success(goods);
+    }
+
     @DeleteMapping
-    public R<String> deleteGoodById(Integer id){
+    public R<String> deleteGoodById(Long id){
         goodsService.removeById(id);
         return R.success("success");
     }
